@@ -1,6 +1,6 @@
 import { Referencia } from '../entity/Referencia';
 import { ReferenciasResponseType } from '../interfaces/FipeResponseTypes';
-import { TipoCombustivel } from '../enums/TipoVeiculo';
+import { TipoCombustivel } from '../enums/TipoCombustivel';
 
 const months: { [key: string]: number } = {
   janeiro: 1,
