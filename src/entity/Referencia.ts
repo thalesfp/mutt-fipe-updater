@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, BeforeInsert } from 'typeorm';
 
 @Entity('referencias')
 export class Referencia {
@@ -19,4 +19,9 @@ export class Referencia {
 
   @Column({ name: 'last_update' })
   lastUpdate: Date;
+
+  @BeforeInsert()
+  setId() {
+    this.id = 1;
+  }
 }

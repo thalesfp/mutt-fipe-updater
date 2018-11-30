@@ -1,24 +1,24 @@
-export class ReferenciasResponseType {
+export interface ReferenciasResponseType {
   Codigo: number;
   Mes: string;
 }
 
-export class MarcasResponseType {
+export interface MarcasResponseType {
   Label: string;
   Value: number;
 }
 
-export class ModelosResponseType {
+export interface ModelosResponseType {
   Label: string;
   Value: number;
 }
 
-export class AnoModelosResponseType {
+export interface AnoModelosResponseType {
   Label: string;
   Value: string;
 }
 
-export class AnoModeloResponseType {
+export interface AnoModeloResponseType {
   Valor: string;
   Marca: string;
   Modelo: string;

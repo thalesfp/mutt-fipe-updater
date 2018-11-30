@@ -8,7 +8,7 @@ import {
   ModelosResponseType,
   AnoModelosResponseType,
   AnoModeloResponseType,
-} from '../entity/FipeResponseTypes';
+} from '../interfaces/FipeResponseTypes';
 import { adaptTipoVeiculo } from '../adapters/adaptToFipeApi';
 
 const baseURL = 'https://tabela-fipe-api-node.herokuapp.com/';
@@ -25,12 +25,14 @@ export default {
   marcas: async (tipoVeiculo: TipoVeiculo) =>
     instance.get<MarcasResponseType[]>(`${adaptTipoVeiculo(tipoVeiculo)}/marcas`),
   modelos: async (tipoVeiculo: TipoVeiculo, marca: number) =>
-    instance.get<ModelosResponseType[]>(`/${adaptTipoVeiculo(tipoVeiculo)}/marcas/${marca}/modelos`),
+    instance.get<ModelosResponseType[]>(
+      `/${adaptTipoVeiculo(tipoVeiculo)}/marcas/${marca}/modelos`
+    ),
   anoModelos: async (tipoVeiculo: TipoVeiculo, marca: number, modelo: number) =>
     instance.get<AnoModelosResponseType[]>(
       `/${adaptTipoVeiculo(tipoVeiculo)}/marcas/${marca}/modelos/${modelo}/ano_modelos`
     ),
-  anoModelo: async (tipoVeiculo: TipoVeiculo, marca: number, modelo: number, anoModelo: number) =>
+  anoModelo: async (tipoVeiculo: TipoVeiculo, marca: number, modelo: number, anoModelo: string) =>
     instance.get<AnoModeloResponseType>(
       `/${adaptTipoVeiculo(tipoVeiculo)}/marcas/${marca}/modelos/${modelo}/ano_modelos/${anoModelo}`
     ),

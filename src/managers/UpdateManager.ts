@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { getRepository, FindConditions, Repository } from 'typeorm';
 import * as async from 'async';
 
 import { FipeManager } from './FipeManager';
@@ -16,14 +16,24 @@ export const UpdateManager = {
     const lastReferenciaFromApi = await FipeManager.getLastReferenciaFromApi();
 
     if (UpdateManager.shouldUpdate(currentReferenciaInDatabase, lastReferenciaFromApi)) {
-      console.log('Iniciando atualização...');
-      await UpdateManager.updateCarros();
+      console.log('Updating values...');
+      await UpdateManager.updateVeiculos(TipoVeiculo.carro);
+      await UpdateManager.updateVeiculos(TipoVeiculo.moto);
+      await UpdateManager.updateReferencia(lastReferenciaFromApi);
     } else {
-      console.log('Não precisa atualizar');
+      console.log('Updating is not necessary.');
+      await UpdateManager.updateReferenciaLastCheck();
     }
   },
 
-  shouldUpdate: (currentReferenciaInDatabase: Referencia, lastReferenciaFromApi: Referencia): Boolean => {
+  shouldUpdate: (
+    currentReferenciaInDatabase: Referencia,
+    lastReferenciaFromApi: Referencia
+  ): Boolean => {
+    if (!currentReferenciaInDatabase) {
+      return true;
+    }
+
     if (lastReferenciaFromApi.ano > currentReferenciaInDatabase.ano) {
       return true;
     }
@@ -35,17 +45,35 @@ export const UpdateManager = {
     return false;
   },
 
-  updateCarros: async (): Promise<Boolean> => {
-    const marcas = await UpdateManager.updateMarcas(TipoVeiculo.carro);
+  updateReferenciaLastCheck: async (): Promise<Boolean> => {
+    const referenciaRepository = getRepository(Referencia);
+
+    await referenciaRepository.update(1, { lastCheck: new Date() });
+
+    return true;
+  },
+
+  updateReferencia: async (referencia: Referencia): Promise<Boolean> => {
+    const referenciaRepository = getRepository(Referencia);
+
+    await referenciaRepository.clear();
+
+    referencia.lastCheck = new Date();
+    referencia.lastUpdate = new Date();
+
+    await referenciaRepository.save(referencia);
+
+    return true;
+  },
+
+  updateVeiculos: async (tipoVeiculo: TipoVeiculo): Promise<Boolean> => {
+    const marcas = await UpdateManager.updateMarcas(tipoVeiculo);
 
     async.mapLimit(marcas, ASYNC_MAP_LIMIT, async (marca, callback) => {
-      const modelos = await UpdateManager.updateModelos(TipoVeiculo.carro, marca);
+      const modelos = await UpdateManager.updateModelos(tipoVeiculo, marca);
 
       async.mapLimit(modelos, ASYNC_MAP_LIMIT, async (modelo, callback) => {
-        const anoModelos = await UpdateManager.updateAnoModelo(TipoVeiculo.carro, marca, modelo);
-
-        console.log(`${marca.nome} ${modelo.nome} ${anoModelos.length}`);
-
+        await UpdateManager.updateAnoModelo(tipoVeiculo, marca, modelo);
         callback();
       });
 
@@ -55,40 +83,65 @@ export const UpdateManager = {
     return true;
   },
 
-  updateMotos: (): Boolean => {
-    return true;
-  },
-
   updateMarcas: async (tipoVeiculo: TipoVeiculo): Promise<Marca[]> => {
     const marcaRepository = await getRepository(Marca);
-    const marcas = await FipeManager.getMarcas(tipoVeiculo);
+    const marcasFromFipe = await FipeManager.getMarcas(tipoVeiculo);
 
-    marcas.forEach(async marca => {
-      if ((await marcaRepository.count({ idFipe: marca.idFipe })) === 0) {
-        await marcaRepository.save(marca);
-      }
-    });
+    const marcas: Marca[] = [];
+
+    for (const marcaFromFipe of marcasFromFipe) {
+      const marca =
+        (await marcaRepository.count({ idFipe: marcaFromFipe.idFipe })) === 0
+          ? await marcaRepository.create(marcaFromFipe)
+          : await marcaRepository.findOne({ idFipe: marcaFromFipe.idFipe });
+
+      marcas.push(marca);
+    }
 
     return marcas;
   },
 
   updateModelos: async (tipoVeiculo: TipoVeiculo, marca: Marca): Promise<Modelo[]> => {
     const modeloRepository = await getRepository(Modelo);
-    const modelos = await FipeManager.getModelos(tipoVeiculo, marca);
+    const modelosFromFipe = await FipeManager.getModelos(tipoVeiculo, marca);
 
-    modelos.forEach(async modelo => {
-      if ((await modeloRepository.count({ idFipe: modelo.idFipe })) === 0) {
-        await modeloRepository.save(modelo);
-      }
-    });
+    const modelos: Modelo[] = [];
+
+    for (const modeloFromFipe of modelosFromFipe) {
+      const modelo =
+        (await modeloRepository.count({ idFipe: modeloFromFipe.idFipe })) === 0
+          ? await modeloRepository.create(modeloFromFipe)
+          : await modeloRepository.findOne({ idFipe: modeloFromFipe.idFipe });
+
+      modelos.push(modelo);
+    }
 
     return modelos;
   },
 
-  updateAnoModelo: async (tipoVeiculo: TipoVeiculo, marca: Marca, modelo: Modelo): Promise<AnoModelo[]> => {
+  updateAnoModelo: async (tipoVeiculo: TipoVeiculo, marca: Marca, modelo: Modelo) => {
     const anoModeloRepository = await getRepository(AnoModelo);
-    const anoModelos = await FipeManager.getAnoModelos(tipoVeiculo, marca, modelo);
+    const preAnoModelosFromFipe = await FipeManager.getAnoModelos(tipoVeiculo, marca, modelo);
 
-    return anoModelos;
+    preAnoModelosFromFipe.forEach(async preAnoModeloFromFipe => {
+      const anoModeloFromFipe = await FipeManager.getAnoModelo(
+        tipoVeiculo,
+        marca,
+        modelo,
+        preAnoModeloFromFipe
+      );
+
+      const query: FindConditions<AnoModelo> = {
+        codigoFipe: anoModeloFromFipe.codigoFipe,
+        ano: anoModeloFromFipe.ano,
+        combustivel: anoModeloFromFipe.combustivel,
+      };
+
+      if ((await anoModeloRepository.count(query)) === 0) {
+        anoModeloRepository.create(anoModeloFromFipe);
+      } else {
+        anoModeloRepository.update(query, anoModeloFromFipe);
+      }
+    });
   },
 };

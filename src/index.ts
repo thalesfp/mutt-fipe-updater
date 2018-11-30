@@ -1,9 +1,12 @@
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
 import * as dotenv from 'dotenv';
+import { createConnection } from 'typeorm';
+import * as Sentry from '@sentry/node';
+
 import { UpdateManager } from './managers/UpdateManager';
 
 dotenv.config();
+Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 createConnection({
   type: 'postgres',

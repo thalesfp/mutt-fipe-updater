@@ -1,5 +1,6 @@
 import { Referencia } from '../entity/Referencia';
-import { ReferenciasResponseType } from '../entity/FipeResponseTypes';
+import { ReferenciasResponseType } from '../interfaces/FipeResponseTypes';
+import { TipoCombustivel } from '../enums/TipoVeiculo';
 
 const months: { [key: string]: number } = {
   janeiro: 1,
@@ -24,6 +25,26 @@ export const adaptReferencia = (referenciaFipe: ReferenciasResponseType): Refere
 
   referencia.mes = months[mes];
   referencia.ano = Number(ano);
+  referencia.idFipe = referenciaFipe.Codigo;
 
   return referencia;
+};
+
+export const adaptValor = (valor: string): number => {
+  const convertedValor = valor.replace(/[^0-9,]/g, '').replace(/,/, '.');
+
+  return parseFloat(convertedValor);
+};
+
+export const adaptCombustivel = (combustivel: string): number => {
+  switch (combustivel) {
+    case 'Gasolina':
+      return TipoCombustivel.gasolina;
+    case 'Álcool':
+      return TipoCombustivel.alcool;
+    case 'Diesel':
+      return TipoCombustivel.diesel;
+    default:
+      throw `Combustível inválido: ${combustivel}`;
+  }
 };

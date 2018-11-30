@@ -6,16 +6,17 @@ import { TipoVeiculo } from '../enums/TipoVeiculo';
 import { Marca } from '../entity/Marca';
 import { Modelo } from '../entity/Modelo';
 import { AnoModelo } from '../entity/AnoModelo';
-import { adaptReferencia } from '../adapters/adaptFromFipeApi';
+import { adaptReferencia, adaptValor, adaptCombustivel } from '../adapters/adaptFromFipeApi';
 import { adaptAnoCombustivel } from '../adapters/adaptToFipeApi';
-import { ReferenciasResponseType } from '../entity/FipeResponseTypes';
+import { ReferenciasResponseType } from '../interfaces/FipeResponseTypes';
 
 export const FipeManager = {
   getLastReferenciaFromApi: async (): Promise<Referencia> => {
     const referencias = await FipeService.referencias();
 
-    const lastReferencia = referencias.data.reduce((prev: ReferenciasResponseType, current: ReferenciasResponseType) =>
-      prev.Codigo > current.Codigo ? prev : current
+    const lastReferencia = referencias.data.reduce(
+      (prev: ReferenciasResponseType, current: ReferenciasResponseType) =>
+        prev.Codigo > current.Codigo ? prev : current
     );
 
     return adaptReferencia(lastReferencia);
@@ -71,7 +72,11 @@ export const FipeManager = {
     return modelos;
   },
 
-  getAnoModelos: async (tipoVeiculo: TipoVeiculo, marca: Marca, modelo: Modelo): Promise<AnoModelo[]> => {
+  getAnoModelos: async (
+    tipoVeiculo: TipoVeiculo,
+    marca: Marca,
+    modelo: Modelo
+  ): Promise<AnoModelo[]> => {
     const anoModelos: AnoModelo[] = [];
 
     try {
@@ -84,6 +89,7 @@ export const FipeManager = {
 
         anoModelo.ano = ano;
         anoModelo.combustivel = combustivel;
+        anoModelo.modelo = modelo;
 
         anoModelos.push(anoModelo);
       });
@@ -92,5 +98,33 @@ export const FipeManager = {
     }
 
     return anoModelos;
+  },
+
+  getAnoModelo: async (
+    tipoVeiculo: TipoVeiculo,
+    marca: Marca,
+    modelo: Modelo,
+    anoModelo: AnoModelo
+  ): Promise<AnoModelo> => {
+    try {
+      const { data } = await FipeService.anoModelo(
+        tipoVeiculo,
+        marca.idFipe,
+        modelo.idFipe,
+        `${anoModelo.ano}-${anoModelo.combustivel}`
+      );
+
+      const anoModeloModel = new AnoModelo();
+
+      anoModeloModel.codigoFipe = data.CodigoFipe;
+      anoModeloModel.valor = adaptValor(data.Valor);
+      anoModeloModel.ano = data.AnoModelo;
+      anoModeloModel.combustivel = adaptCombustivel(data.Combustivel);
+      anoModeloModel.modelo = modelo;
+
+      return anoModeloModel;
+    } catch (error) {
+      throw `Ano Modelo Inválido: ${JSON.stringify(error)}`;
+    }
   },
 };
