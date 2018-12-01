@@ -1,7 +1,8 @@
-import { Referencia } from '../entity/Referencia';
-import { ReferenciasResponseType } from '../interfaces/FipeResponseTypes';
-import { TipoCombustivel } from '../enums/TipoCombustivel';
+import { Referencia } from "../entity/Referencia";
+import { TipoCombustivel } from "../enums/TipoCombustivel";
+import { ReferenciasResponseType } from "../interfaces/FipeResponseTypes";
 
+/* tslint:disable:object-literal-sort-keys */
 const months: { [key: string]: number } = {
   janeiro: 1,
   fevereiro: 2,
@@ -20,8 +21,8 @@ const months: { [key: string]: number } = {
 export const adaptReferencia = (referenciaFipe: ReferenciasResponseType): Referencia => {
   const referencia = new Referencia();
 
-  const mes = referenciaFipe.Mes.split('/')[0];
-  const ano = referenciaFipe.Mes.split('/')[1];
+  const mes = referenciaFipe.Mes.split("/")[0];
+  const ano = referenciaFipe.Mes.split("/")[1];
 
   referencia.mes = months[mes];
   referencia.ano = Number(ano);
@@ -31,20 +32,20 @@ export const adaptReferencia = (referenciaFipe: ReferenciasResponseType): Refere
 };
 
 export const adaptValor = (valor: string): number => {
-  const convertedValor = valor.replace(/[^0-9,]/g, '').replace(/,/, '.');
+  const convertedValor = valor.replace(/[^0-9,]/g, "").replace(/,/, ".");
 
   return parseFloat(convertedValor);
 };
 
 export const adaptCombustivel = (combustivel: string): number => {
   switch (combustivel) {
-    case 'Gasolina':
+    case "Gasolina":
       return TipoCombustivel.gasolina;
-    case 'Álcool':
+    case "Álcool":
       return TipoCombustivel.alcool;
-    case 'Diesel':
+    case "Diesel":
       return TipoCombustivel.diesel;
     default:
-      throw `Combustível inválido: ${combustivel}`;
+      throw new Error(`Combustível inválido: ${combustivel}`);
   }
 };

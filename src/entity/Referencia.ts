@@ -1,27 +1,27 @@
-import { Entity, PrimaryColumn, Column, BeforeInsert } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity('referencias')
+@Entity("referencias")
 export class Referencia {
   @PrimaryColumn()
-  id: number;
+  public id: number;
 
-  @Column({ name: 'id_fipe' })
-  idFipe: number;
-
-  @Column()
-  mes: number;
+  @Column({ name: "id_fipe" })
+  public idFipe: number;
 
   @Column()
-  ano: number;
+  public mes: number;
 
-  @Column({ name: 'last_check' })
-  lastCheck: Date;
+  @Column()
+  public ano: number;
 
-  @Column({ name: 'last_update' })
-  lastUpdate: Date;
+  @Column({ name: "last_check" })
+  public lastCheck: Date;
+
+  @Column({ name: "last_update" })
+  public lastUpdate: Date;
 
   @BeforeInsert()
-  setId() {
+  public setId() {
     this.id = 1;
   }
 }

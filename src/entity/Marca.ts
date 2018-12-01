@@ -1,35 +1,24 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  JoinColumn,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-import { Modelo } from './Modelo';
-import { TipoVeiculo } from '../enums/TipoVeiculo';
-import { RailsModel } from './RailsModel';
+import { TipoVeiculo } from "../enums/TipoVeiculo";
+import { Modelo } from "./Modelo";
+import { RailsModel } from "./RailsModel";
 
-@Entity({
-  name: 'marcas',
-  synchronize: false,
-})
+@Entity("marcas")
 export class Marca extends RailsModel {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn("uuid")
+  public id: string;
 
   @Column()
-  nome: string;
+  public nome: string;
 
-  @Column({ name: 'id_fipe' })
-  idFipe: number;
+  @Column({ name: "id_fipe" })
+  public idFipe: number;
 
   @Column()
-  tipo: TipoVeiculo;
+  public tipo: TipoVeiculo;
 
-  @OneToMany(type => Modelo, modelo => modelo.marca)
-  @JoinColumn({ name: 'marca_id' })
-  modelos: Modelo[];
+  @OneToMany((type) => Modelo, (modelo) => modelo.marca)
+  @JoinColumn({ name: "marca_id" })
+  public modelos: Modelo[];
 }

@@ -1,19 +1,19 @@
-import { TipoVeiculo } from '../enums/TipoVeiculo';
+import { TipoVeiculo } from "../enums/TipoVeiculo";
 
-export const adaptTipoVeiculo = (tipoVeiculo: TipoVeiculo): String => {
+export const adaptTipoVeiculo = (tipoVeiculo: TipoVeiculo): string => {
   switch (tipoVeiculo) {
     case TipoVeiculo.carro:
-      return 'carros';
+      return "carros";
     case TipoVeiculo.moto:
-      return 'motos';
+      return "motos";
     default:
       throw new Error(`Tipo de veículo inválido: ${tipoVeiculo}`);
   }
 };
 
-export const adaptAnoCombustivel = (value: String): { ano: number; combustivel: number } => {
-  const ano: number = Number(value.split('-')[0]);
-  const combustivel: number = Number(value.split('-')[1]);
+export const adaptAnoCombustivel = (value: string): { ano: number; combustivel: number } => {
+  const ano: number = Number(value.split("-")[0]);
+  const combustivel: number = Number(value.split("-")[1]);
 
   return { ano, combustivel };
 };

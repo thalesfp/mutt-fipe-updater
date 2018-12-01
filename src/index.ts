@@ -16,7 +16,7 @@ createConnection({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   entities: [__dirname + '/entity/*.js'],
-  synchronize: true,
+  synchronize: false,
 })
   .then(async () => await UpdateManager.init())
   .catch(error => console.log(error));

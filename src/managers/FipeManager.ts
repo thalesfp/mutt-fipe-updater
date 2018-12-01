@@ -1,14 +1,14 @@
-import { getRepository } from 'typeorm';
+import { getRepository } from "typeorm";
 
-import FipeService from '../services/FipeService';
-import { Referencia } from '../entity/Referencia';
-import { TipoVeiculo } from '../enums/TipoVeiculo';
-import { Marca } from '../entity/Marca';
-import { Modelo } from '../entity/Modelo';
-import { AnoModelo } from '../entity/AnoModelo';
-import { adaptReferencia, adaptValor, adaptCombustivel } from '../adapters/adaptFromFipeApi';
-import { adaptAnoCombustivel } from '../adapters/adaptToFipeApi';
-import { ReferenciasResponseType } from '../interfaces/FipeResponseTypes';
+import { adaptCombustivel, adaptReferencia, adaptValor } from "../adapters/adaptFromFipeApi";
+import { adaptAnoCombustivel } from "../adapters/adaptToFipeApi";
+import { AnoModelo } from "../entity/AnoModelo";
+import { Marca } from "../entity/Marca";
+import { Modelo } from "../entity/Modelo";
+import { Referencia } from "../entity/Referencia";
+import { TipoVeiculo } from "../enums/TipoVeiculo";
+import { ReferenciasResponseType } from "../interfaces/FipeResponseTypes";
+import FipeService from "../services/FipeService";
 
 export const FipeManager = {
   getLastReferenciaFromApi: async (): Promise<Referencia> => {
@@ -16,7 +16,7 @@ export const FipeManager = {
 
     const lastReferencia = referencias.data.reduce(
       (prev: ReferenciasResponseType, current: ReferenciasResponseType) =>
-        prev.Codigo > current.Codigo ? prev : current
+        prev.Codigo > current.Codigo ? prev : current,
     );
 
     return adaptReferencia(lastReferencia);
@@ -34,7 +34,7 @@ export const FipeManager = {
     try {
       const response = await FipeService.marcas(tipoVeiculo);
 
-      response.data.forEach(m => {
+      response.data.forEach((m) => {
         const marca = new Marca();
 
         marca.nome = m.Label;
@@ -56,7 +56,7 @@ export const FipeManager = {
     try {
       const response = await FipeService.modelos(tipoVeiculo, marca.idFipe);
 
-      response.data.forEach(m => {
+      response.data.forEach((m) => {
         const modelo = new Modelo();
 
         modelo.nome = m.Label;
@@ -75,14 +75,14 @@ export const FipeManager = {
   getAnoModelos: async (
     tipoVeiculo: TipoVeiculo,
     marca: Marca,
-    modelo: Modelo
+    modelo: Modelo,
   ): Promise<AnoModelo[]> => {
     const anoModelos: AnoModelo[] = [];
 
     try {
       const response = await FipeService.anoModelos(tipoVeiculo, marca.idFipe, modelo.idFipe);
 
-      response.data.forEach(m => {
+      response.data.forEach((m) => {
         const anoModelo = new AnoModelo();
 
         const { ano, combustivel } = adaptAnoCombustivel(m.Value);
@@ -104,14 +104,14 @@ export const FipeManager = {
     tipoVeiculo: TipoVeiculo,
     marca: Marca,
     modelo: Modelo,
-    anoModelo: AnoModelo
+    anoModelo: AnoModelo,
   ): Promise<AnoModelo> => {
     try {
       const { data } = await FipeService.anoModelo(
         tipoVeiculo,
         marca.idFipe,
         modelo.idFipe,
-        `${anoModelo.ano}-${anoModelo.combustivel}`
+        `${anoModelo.ano}-${anoModelo.combustivel}`,
       );
 
       const anoModeloModel = new AnoModelo();
@@ -124,7 +124,7 @@ export const FipeManager = {
 
       return anoModeloModel;
     } catch (error) {
-      throw `Ano Modelo Inválido: ${JSON.stringify(error)}`;
+      throw new Error(`Ano Modelo Inválido: ${JSON.stringify(error)}`);
     }
   },
 };

@@ -10,7 +10,8 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon dist/index.js",
-    "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts'"
+    "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts'",
+    "lint": "tslint src/**/*.ts --fix"
   },
   "author": "",
   "license": "ISC",
