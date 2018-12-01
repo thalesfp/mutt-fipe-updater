@@ -1,7 +1,8 @@
 parser: typescript
-singleQuote: true
+singleQuote: false
 printWidth: 100
 jsxBracketSameLine: false
-trailingComma: es5
+trailingComma: all
 bracketSpacing: true
 semi: true
+arrowParens: always

@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 
+import logger from "./infra/logging/logging";
 import { UpdateManager } from "./managers/UpdateManager";
 
 dotenv.config();
@@ -12,7 +13,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
 createConnection({
   type: "postgres",
   host: process.env.DB_HOST,
-  port: 5432,
+  port: Number(process.env.DB_PORT),
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
@@ -20,4 +21,4 @@ createConnection({
   synchronize: false,
 })
   .then(async () => await UpdateManager.init())
-  .catch((error) => console.log(error));
+  .catch((error) => logger.error(error));

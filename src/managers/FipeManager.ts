@@ -7,6 +7,7 @@ import { Marca } from "../entity/Marca";
 import { Modelo } from "../entity/Modelo";
 import { Referencia } from "../entity/Referencia";
 import { TipoVeiculo } from "../enums/TipoVeiculo";
+import logger from "../infra/logging/logging";
 import { ReferenciasResponseType } from "../interfaces/FipeResponseTypes";
 import FipeService from "../services/FipeService";
 
@@ -44,7 +45,7 @@ export const FipeManager = {
         marcas.push(marca);
       });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
 
     return marcas;
@@ -66,7 +67,7 @@ export const FipeManager = {
         modelos.push(modelo);
       });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
 
     return modelos;
@@ -94,7 +95,7 @@ export const FipeManager = {
         anoModelos.push(anoModelo);
       });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
 
     return anoModelos;

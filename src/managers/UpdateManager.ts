@@ -6,6 +6,7 @@ import { Marca } from "../entity/Marca";
 import { Modelo } from "../entity/Modelo";
 import { Referencia } from "../entity/Referencia";
 import { TipoVeiculo } from "../enums/TipoVeiculo";
+import logger from "../infra/logging/logging";
 import { FipeManager } from "./FipeManager";
 
 const ASYNC_MAP_LIMIT = 3;
@@ -16,12 +17,12 @@ export const UpdateManager = {
     const lastReferenciaFromApi = await FipeManager.getLastReferenciaFromApi();
 
     if (UpdateManager.shouldUpdate(currentReferenciaInDatabase, lastReferenciaFromApi)) {
-      console.log("Updating values...");
+      logger.info("Updating values...");
       await UpdateManager.updateVeiculos(TipoVeiculo.carro);
       await UpdateManager.updateVeiculos(TipoVeiculo.moto);
       await UpdateManager.updateReferencia(lastReferenciaFromApi);
     } else {
-      console.log("Updating is not necessary.");
+      logger.info("Updating is not necessary.");
       await UpdateManager.updateReferenciaLastCheck();
     }
   },
@@ -137,7 +138,7 @@ export const UpdateManager = {
         combustivel: anoModeloFromFipe.combustivel,
       };
 
-      console.log(`${marca.nome} ${modelo.nome} ${anoModeloFromFipe.ano}`);
+      logger.info(`${marca.nome} ${modelo.nome} ${anoModeloFromFipe.ano}`);
 
       if ((await anoModeloRepository.count(query)) === 0) {
         anoModeloRepository.save(anoModeloFromFipe);

@@ -23,7 +23,9 @@ retryAxios.attach(instance);
 export default {
   anoModelo: async (tipoVeiculo: TipoVeiculo, marca: number, modelo: number, anoModelo: string) =>
     instance.get<AnoModeloResponseType>(
-      `/${adaptTipoVeiculo(tipoVeiculo)}/marcas/${marca}/modelos/${modelo}/ano_modelos/${anoModelo}`,
+      `/${adaptTipoVeiculo(
+        tipoVeiculo,
+      )}/marcas/${marca}/modelos/${modelo}/ano_modelos/${anoModelo}`,
     ),
   anoModelos: async (tipoVeiculo: TipoVeiculo, marca: number, modelo: number) =>
     instance.get<AnoModelosResponseType[]>(
