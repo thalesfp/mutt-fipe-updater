@@ -13,7 +13,7 @@
     "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts' 'test/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' 'test/**/*.ts' --fix",
     "precommit": "npm run prettier && npm run lint",
-    "prestart": "npm run build-ts"
+    "deploy": "sh scripts/deploy.sh"
   },
   "author": "Thales Pereira <thales@appcraft.com.br>",
   "repository": {
@@ -52,7 +52,8 @@
     "nyc": "^13.1.0",
     "prettier": "^1.15.2",
     "ts-node": "^7.0.1",
-    "tslint": "^5.11.0"
+    "tslint": "^5.11.0",
+    "typescript": "^3.2.1"
   },
   "dependencies": {
     "@sentry/node": "^4.4.1",
@@ -64,7 +65,6 @@
     "reflect-metadata": "^0.1.12",
     "retry-axios": "^0.3.2",
     "typeorm": "^0.2.9",
-    "typescript": "^3.2.1",
     "winston": "^3.1.0"
   }
 }

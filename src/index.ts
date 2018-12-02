@@ -36,7 +36,7 @@ const initUpdate = async () => {
   }
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "production") {
   const job = new cron.CronJob("0 0 5 * * *", initUpdate);
   job.start();
 } else {
