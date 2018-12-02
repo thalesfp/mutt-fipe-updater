@@ -33,10 +33,10 @@ export class UpdateManager {
         logger.info("Updating database...");
         await this.updateVeiculos(manager, TipoVeiculo.carro);
         await this.updateVeiculos(manager, TipoVeiculo.moto);
-        await this.updateReferencia(manager, lastReferenciaFromApi);
+        await this.createReferencia(manager, lastReferenciaFromApi);
       } else {
         logger.info("Database already updated.");
-        await this.updateReferenciaLastCheck(manager);
+        await this.updateReferencia(manager, currentReferencia);
       }
 
       logger.info("Saving...");
@@ -65,16 +65,11 @@ export class UpdateManager {
     return false;
   }
 
-  public updateReferenciaLastCheck = async (manager: EntityManager) => {
-    manager.update(Referencia, 1, { lastCheck: new Date() });
+  public updateReferencia = async (manager: EntityManager, referencia: Referencia) => {
+    await manager.update(Referencia, referencia.id, { idFipe: referencia.idFipe });
   }
 
-  public updateReferencia = async (manager: EntityManager, referencia: Referencia) => {
-    await manager.clear(Referencia);
-
-    referencia.lastCheck = new Date();
-    referencia.lastUpdate = new Date();
-
+  public createReferencia = async (manager: EntityManager, referencia: Referencia) => {
     await manager.save(Referencia, referencia);
   }
 
@@ -165,7 +160,6 @@ export class UpdateManager {
         await manager.save(AnoModelo, anoModeloFromFipe);
       } else {
         await manager.update(AnoModelo, query, {
-          updatedAt: new Date(),
           valor: anoModeloFromFipe.valor,
         });
       }

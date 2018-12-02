@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany } from "typeorm";
 
 import { TipoVeiculo } from "../enums/TipoVeiculo";
 import { BaseEntity } from "./BaseEntity";
@@ -6,9 +6,6 @@ import { Modelo } from "./Modelo";
 
 @Entity("marcas")
 export class Marca extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  public id: string;
-
   @Column()
   public nome: string;
 

@@ -1,14 +1,10 @@
-import { Column, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseEntity } from "./BaseEntity";
 import { Modelo } from "./Modelo";
 
 @Entity("ano_modelos")
 export class AnoModelo extends BaseEntity {
-  @PrimaryColumn()
-  @Generated("uuid")
-  public id: string;
-
   @Column()
   public ano: number;
 

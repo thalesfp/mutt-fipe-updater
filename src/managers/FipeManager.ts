@@ -27,7 +27,7 @@ export class FipeManager {
   }
 
   public getCurrentReferenciaInDatabase = async (manager: EntityManager): Promise<Referencia> => {
-    return await manager.findOne(Referencia, 1);
+    return await manager.findOne(Referencia, { order: { idFipe: "DESC" } });
   }
 
   public getMarcas = async (tipoVeiculo: TipoVeiculo): Promise<Marca[]> => {

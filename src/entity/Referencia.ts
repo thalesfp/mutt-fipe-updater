@@ -1,10 +1,8 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
+import { BaseEntity } from "./BaseEntity";
 
 @Entity("referencias")
-export class Referencia {
-  @PrimaryColumn()
-  public id: number;
-
+export class Referencia extends BaseEntity {
   @Column({ name: "id_fipe" })
   public idFipe: number;
 
@@ -13,15 +11,4 @@ export class Referencia {
 
   @Column()
   public ano: number;
-
-  @Column({ name: "last_check" })
-  public lastCheck: Date;
-
-  @Column({ name: "last_update" })
-  public lastUpdate: Date;
-
-  @BeforeInsert()
-  public setId() {
-    this.id = 1;
-  }
 }
