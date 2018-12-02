@@ -12,7 +12,8 @@
     "watch-node": "nodemon dist/index.js",
     "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts' 'test/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' 'test/**/*.ts' --fix",
-    "precommit": "npm run prettier && npm run lint"
+    "precommit": "npm run prettier && npm run lint",
+    "heroku-postbuild": "npm run build-ts"
   },
   "author": "",
   "license": "ISC",
