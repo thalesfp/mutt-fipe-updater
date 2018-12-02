@@ -6,8 +6,6 @@ export const adaptTipoVeiculo = (tipoVeiculo: TipoVeiculo): string => {
       return "carros";
     case TipoVeiculo.moto:
       return "motos";
-    default:
-      throw new Error(`Tipo de veículo inválido: ${tipoVeiculo}`);
   }
 };
 

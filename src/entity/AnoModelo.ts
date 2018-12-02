@@ -21,7 +21,7 @@ export class AnoModelo extends RailsModel {
   @Column({ type: "float" })
   public valor: number;
 
-  @ManyToOne((type) => Modelo, (modelo) => modelo.anoModelos)
+  @ManyToOne(() => Modelo, (modelo) => modelo.anoModelos)
   @JoinColumn({ name: "modelo_id" })
   public modelo: Modelo;
 }

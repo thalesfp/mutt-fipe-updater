@@ -18,7 +18,7 @@ export class Marca extends RailsModel {
   @Column()
   public tipo: TipoVeiculo;
 
-  @OneToMany((type) => Modelo, (modelo) => modelo.marca)
+  @OneToMany(() => Modelo, (modelo) => modelo.marca)
   @JoinColumn({ name: "marca_id" })
   public modelos: Modelo[];
 }

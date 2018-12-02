@@ -1,0 +1,12 @@
+{
+  "env": {
+    "node": true,
+    "mocha": true,
+    "chai": true
+  },
+  "globals": {
+    "assert": true,
+    "expect": true,
+    "chai": true
+  }
+}

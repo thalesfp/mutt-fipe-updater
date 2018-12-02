@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import { EntityManager } from "typeorm";
 
 import { adaptCombustivel, adaptReferencia, adaptValor } from "../adapters/adaptFromFipeApi";
 import { adaptAnoCombustivel } from "../adapters/adaptToFipeApi";
@@ -7,73 +7,74 @@ import { Marca } from "../entity/Marca";
 import { Modelo } from "../entity/Modelo";
 import { Referencia } from "../entity/Referencia";
 import { TipoVeiculo } from "../enums/TipoVeiculo";
-import logger from "../infra/logging/logging";
 import { ReferenciasResponseType } from "../interfaces/FipeResponseTypes";
 import FipeService from "../services/FipeService";
 
-export const FipeManager = {
-  getLastReferenciaFromApi: async (): Promise<Referencia> => {
-    const referencias = await FipeService.referencias();
+export class FipeManager {
+  public getLastReferenciaFromApi = async (): Promise<Referencia> => {
+    try {
+      const referencias = await FipeService.referencias();
 
-    const lastReferencia = referencias.data.reduce(
-      (prev: ReferenciasResponseType, current: ReferenciasResponseType) =>
-        prev.Codigo > current.Codigo ? prev : current,
-    );
+      const lastReferencia = referencias.data.reduce(
+        (prev: ReferenciasResponseType, current: ReferenciasResponseType) =>
+          prev.Codigo > current.Codigo ? prev : current,
+      );
 
-    return adaptReferencia(lastReferencia);
-  },
+      return adaptReferencia(lastReferencia);
+    } catch (error) {
+      throw error;
+    }
+  }
 
-  getCurrentReferenciaInDatabase: async (): Promise<Referencia> => {
-    const referenciaRepository = getRepository(Referencia);
+  public getCurrentReferenciaInDatabase = async (manager: EntityManager): Promise<Referencia> => {
+    return await manager.findOne(Referencia, 1);
+  }
 
-    return referenciaRepository.findOne(1);
-  },
-
-  getMarcas: async (tipoVeiculo: TipoVeiculo): Promise<Marca[]> => {
+  public getMarcas = async (tipoVeiculo: TipoVeiculo): Promise<Marca[]> => {
     const marcas: Marca[] = [];
 
     try {
       const response = await FipeService.marcas(tipoVeiculo);
 
-      response.data.forEach((m) => {
+      for (const marcaResponse of response.data) {
         const marca = new Marca();
 
-        marca.nome = m.Label;
-        marca.idFipe = Number(m.Value);
+        marca.nome = marcaResponse.Label;
+        marca.idFipe = Number(marcaResponse.Value);
         marca.tipo = tipoVeiculo;
 
         marcas.push(marca);
-      });
+      }
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
 
     return marcas;
-  },
+  }
 
-  getModelos: async (tipoVeiculo: TipoVeiculo, marca: Marca): Promise<Modelo[]> => {
+  public getModelos = async (tipoVeiculo: TipoVeiculo, marca: Marca): Promise<Modelo[]> => {
     const modelos: Modelo[] = [];
 
     try {
       const response = await FipeService.modelos(tipoVeiculo, marca.idFipe);
 
-      response.data.forEach((m) => {
+      for (const modeloResponse of response.data) {
         const modelo = new Modelo();
 
-        modelo.nome = m.Label;
-        modelo.idFipe = Number(m.Value);
+        modelo.nome = modeloResponse.Label;
+        modelo.idFipe = Number(modeloResponse.Value);
         modelo.marca = marca;
 
         modelos.push(modelo);
-      });
+      }
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
 
     return modelos;
-  },
+  }
 
-  getAnoModelos: async (
+  public getAnoModelos = async (
     tipoVeiculo: TipoVeiculo,
     marca: Marca,
     modelo: Modelo,
@@ -83,25 +84,25 @@ export const FipeManager = {
     try {
       const response = await FipeService.anoModelos(tipoVeiculo, marca.idFipe, modelo.idFipe);
 
-      response.data.forEach((m) => {
+      for (const anoModeloResponse of response.data) {
         const anoModelo = new AnoModelo();
 
-        const { ano, combustivel } = adaptAnoCombustivel(m.Value);
+        const { ano, combustivel } = adaptAnoCombustivel(anoModeloResponse.Value);
 
         anoModelo.ano = ano;
         anoModelo.combustivel = combustivel;
         anoModelo.modelo = modelo;
 
         anoModelos.push(anoModelo);
-      });
+      }
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
 
     return anoModelos;
-  },
+  }
 
-  getAnoModelo: async (
+  public getAnoModelo = async (
     tipoVeiculo: TipoVeiculo,
     marca: Marca,
     modelo: Modelo,
@@ -125,7 +126,7 @@ export const FipeManager = {
 
       return anoModeloModel;
     } catch (error) {
-      throw new Error(`Ano Modelo Inválido: ${JSON.stringify(error)}`);
+      throw error;
     }
-  },
-};
+  }
+}

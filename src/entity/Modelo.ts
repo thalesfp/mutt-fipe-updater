@@ -24,11 +24,11 @@ export class Modelo extends RailsModel {
   @Column({ name: "id_fipe" })
   public idFipe: number;
 
-  @ManyToOne((type) => Marca, (marca) => marca.modelos)
+  @ManyToOne(() => Marca, (marca) => marca.modelos)
   @JoinColumn({ name: "marca_id" })
   public marca: Marca;
 
-  @OneToMany((type) => AnoModelo, (anoModelo) => anoModelo.modelo)
+  @OneToMany(() => AnoModelo, (anoModelo) => anoModelo.modelo)
   @JoinColumn({ name: "modelo_id" })
   public anoModelos: AnoModelo[];
 }

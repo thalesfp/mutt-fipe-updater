@@ -4,32 +4,56 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test nyc mocha test/",
     "start": "node dist/index.js",
     "start-dev": "npm run build-ts && npm run start",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon dist/index.js",
-    "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts'",
-    "lint": "tslint 'src/**/*.ts' --fix",
+    "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "tslint 'src/**/*.ts' 'test/**/*.ts' --fix",
     "precommit": "npm run prettier && npm run lint"
   },
   "author": "",
   "license": "ISC",
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "coverage",
+      "dist",
+      "test",
+      "src/index.ts"
+    ],
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "all": true
+  },
   "devDependencies": {
     "@types/async": "^2.0.50",
     "@types/axios": "^0.14.0",
+    "@types/bluebird": "^3.5.24",
+    "@types/chai": "^4.1.7",
     "@types/dotenv": "^6.1.0",
+    "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.10",
     "@types/winston": "^2.4.4",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "prettier": "^1.15.2",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6"
   },
   "dependencies": {
     "@sentry/node": "^4.4.1",
-    "async": "^2.6.1",
     "axios": "^0.18.0",
+    "bluebird": "^3.5.3",
     "dotenv": "^6.1.0",
     "pg": "^7.6.1",
     "reflect-metadata": "^0.1.12",

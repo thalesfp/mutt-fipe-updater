@@ -46,6 +46,6 @@ export const adaptCombustivel = (combustivel: string): number => {
     case "Diesel":
       return TipoCombustivel.diesel;
     default:
-      throw new Error(`Combustível inválido: ${combustivel}`);
+      throw new TypeError(combustivel);
   }
 };

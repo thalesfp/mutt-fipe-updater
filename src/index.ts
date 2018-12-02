@@ -3,7 +3,8 @@ import * as dotenv from "dotenv";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 
-import logger from "./infra/logging/logging";
+import logger from "./infra/logger/logger";
+import { FipeManager } from "./managers/FipeManager";
 import { UpdateManager } from "./managers/UpdateManager";
 
 dotenv.config();
@@ -20,5 +21,12 @@ createConnection({
   entities: [__dirname + "/entity/*.js"],
   synchronize: false,
 })
-  .then(async () => await UpdateManager.init())
+  .then(async (connection) => {
+    const fipeManager = new FipeManager();
+    const updateManager = new UpdateManager(fipeManager);
+
+    await updateManager.init(connection);
+
+    connection.close();
+  })
   .catch((error) => logger.error(error));
