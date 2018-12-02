@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { TipoVeiculo } from "../enums/TipoVeiculo";
+import { BaseEntity } from "./BaseEntity";
 import { Modelo } from "./Modelo";
-import { RailsModel } from "./RailsModel";
 
 @Entity("marcas")
-export class Marca extends RailsModel {
+export class Marca extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   public id: string;
 

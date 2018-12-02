@@ -1,10 +1,10 @@
 import { Column, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
+import { BaseEntity } from "./BaseEntity";
 import { Modelo } from "./Modelo";
-import { RailsModel } from "./RailsModel";
 
 @Entity("ano_modelos")
-export class AnoModelo extends RailsModel {
+export class AnoModelo extends BaseEntity {
   @PrimaryColumn()
   @Generated("uuid")
   public id: string;

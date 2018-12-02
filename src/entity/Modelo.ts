@@ -9,11 +9,11 @@ import {
 } from "typeorm";
 
 import { AnoModelo } from "./AnoModelo";
+import { BaseEntity } from "./BaseEntity";
 import { Marca } from "./Marca";
-import { RailsModel } from "./RailsModel";
 
 @Entity("modelos")
-export class Modelo extends RailsModel {
+export class Modelo extends BaseEntity {
   @PrimaryColumn()
   @Generated("uuid")
   public id: string;

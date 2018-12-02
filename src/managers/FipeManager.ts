@@ -42,8 +42,6 @@ export class FipeManager {
         marca.nome = marcaResponse.Label;
         marca.idFipe = Number(marcaResponse.Value);
         marca.tipo = tipoVeiculo;
-        marca.createdAt = new Date();
-        marca.updatedAt = new Date();
 
         marcas.push(marca);
       }
@@ -66,8 +64,6 @@ export class FipeManager {
         modelo.nome = modeloResponse.Label;
         modelo.idFipe = Number(modeloResponse.Value);
         modelo.marca = marca;
-        modelo.createdAt = new Date();
-        modelo.updatedAt = new Date();
 
         modelos.push(modelo);
       }
@@ -96,8 +92,6 @@ export class FipeManager {
         anoModelo.ano = ano;
         anoModelo.combustivel = combustivel;
         anoModelo.modelo = modelo;
-        anoModelo.createdAt = new Date();
-        anoModelo.updatedAt = new Date();
 
         anoModelos.push(anoModelo);
       }
@@ -129,8 +123,6 @@ export class FipeManager {
       anoModeloModel.ano = data.AnoModelo;
       anoModeloModel.combustivel = adaptCombustivel(data.Combustivel);
       anoModeloModel.modelo = modelo;
-      anoModeloModel.createdAt = new Date();
-      anoModeloModel.updatedAt = new Date();
 
       return anoModeloModel;
     } catch (error) {
