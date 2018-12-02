@@ -165,6 +165,7 @@ export class UpdateManager {
         await manager.save(AnoModelo, anoModeloFromFipe);
       } else {
         await manager.update(AnoModelo, query, {
+          updatedAt: new Date(),
           valor: anoModeloFromFipe.valor,
         });
       }

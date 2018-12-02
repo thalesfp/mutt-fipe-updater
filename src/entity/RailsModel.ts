@@ -1,9 +1,9 @@
-import { CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Column } from "typeorm";
 
 export abstract class RailsModel {
-  @CreateDateColumn({ name: "created_at" })
+  @Column({ name: "created_at" })
   public createdAt: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @Column({ name: "updated_at" })
   public updatedAt: Date;
 }
