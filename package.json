@@ -1,7 +1,7 @@
 {
   "name": "mutt-fipe-updater",
   "version": "1.0.0",
-  "description": "",
+  "description": "Fipe updater of Mutt Project",
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc mocha test/",
@@ -15,7 +15,10 @@
     "precommit": "npm run prettier && npm run lint",
     "heroku-postbuild": "npm run build-ts"
   },
-  "author": "",
+  "author": "Thales Pereira <thales@appcraft.com.br>",
+  "repository": {
+    "url": "https://github.com/thalesfp/mutt-fipe-updater"
+  },
   "license": "ISC",
   "nyc": {
     "extension": [
