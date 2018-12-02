@@ -22,22 +22,20 @@ export class UpdateManager {
     const queryRunner = connection.createQueryRunner();
     const manager = queryRunner.manager;
 
-    const currentReferenciaInDatabase = await this.fipeManager.getCurrentReferenciaInDatabase(
-      manager,
-    );
+    const currentReferencia = await this.fipeManager.getCurrentReferenciaInDatabase(manager);
     const lastReferenciaFromApi = await this.fipeManager.getLastReferenciaFromApi();
 
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
-      if (this.shouldUpdate(currentReferenciaInDatabase, lastReferenciaFromApi)) {
+      if (this.shouldUpdate(currentReferencia, lastReferenciaFromApi)) {
         logger.info("Updating database...");
         await this.updateVeiculos(manager, TipoVeiculo.carro);
         await this.updateVeiculos(manager, TipoVeiculo.moto);
         await this.updateReferencia(manager, lastReferenciaFromApi);
       } else {
-        logger.info("Database updated.");
+        logger.info("Database already updated.");
         await this.updateReferenciaLastCheck(manager);
       }
 
@@ -53,14 +51,14 @@ export class UpdateManager {
   }
 
   public shouldUpdate = (
-    currentReferenciaInDatabase: Referencia,
+    currentReferencia: Referencia,
     lastReferenciaFromApi: Referencia,
   ): boolean => {
-    if (!currentReferenciaInDatabase) {
+    if (!currentReferencia) {
       return true;
     }
 
-    if (lastReferenciaFromApi.idFipe > currentReferenciaInDatabase.idFipe) {
+    if (lastReferenciaFromApi.idFipe > currentReferencia.idFipe) {
       return true;
     }
 
@@ -163,12 +161,12 @@ export class UpdateManager {
         combustivel: anoModeloFromFipe.combustivel,
       };
 
-      logger.info(`${marca.nome} ${modelo.nome} ${anoModeloFromFipe.ano}`);
-
       if ((await manager.count(AnoModelo, query)) === 0) {
         await manager.save(AnoModelo, anoModeloFromFipe);
       } else {
-        await manager.update(AnoModelo, query, { valor: anoModeloFromFipe.valor });
+        await manager.update(AnoModelo, query, {
+          valor: anoModeloFromFipe.valor,
+        });
       }
     }
   }
