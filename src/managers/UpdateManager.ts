@@ -168,7 +168,7 @@ export class UpdateManager {
       if ((await manager.count(AnoModelo, query)) === 0) {
         await manager.save(AnoModelo, anoModeloFromFipe);
       } else {
-        await manager.update(AnoModelo, query, anoModeloFromFipe);
+        await manager.update(AnoModelo, query, { valor: anoModeloFromFipe.valor });
       }
     }
   }
