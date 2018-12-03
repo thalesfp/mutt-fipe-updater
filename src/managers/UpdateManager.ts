@@ -8,6 +8,7 @@ import { Referencia } from "../entity/Referencia";
 import { TipoVeiculo } from "../enums/TipoVeiculo";
 import logger from "../infra/logger/logger";
 import { FipeManager } from "./FipeManager";
+import { ReferenciaManager } from "./ReferenciaManager";
 
 const ASYNC_MAP_LIMIT = 20;
 
@@ -16,22 +17,24 @@ export class UpdateManager {
     const queryRunner = connection.createQueryRunner();
     const manager = queryRunner.manager;
 
-    const currentReferencia = await this.getCurrentReferencia(manager);
-    const fipeManager = new FipeManager(currentReferencia.idFipe);
-    const lastReferenciaFromApi = await fipeManager.getLastReferenciaFromApi();
-
     try {
+      const referenciaManager = new ReferenciaManager(manager);
+      const currentReferencia = await referenciaManager.getCurrentReferencia();
+      const lastReferenciaFromApi = await referenciaManager.getLastReferenciaFromApi();
+
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
       if (this.shouldUpdate(currentReferencia, lastReferenciaFromApi)) {
         logger.info("Updating database...");
+        const fipeManager = new FipeManager(lastReferenciaFromApi.idFipe);
+
         await this.updateVeiculos(manager, fipeManager, TipoVeiculo.carro);
         await this.updateVeiculos(manager, fipeManager, TipoVeiculo.moto);
-        await this.createReferencia(manager, lastReferenciaFromApi);
+        await referenciaManager.createReferencia(lastReferenciaFromApi);
       } else {
         logger.info("Database already updated.");
-        await this.updateReferencia(manager, currentReferencia);
+        await referenciaManager.updateReferencia(currentReferencia);
       }
 
       logger.info("Saving...");
@@ -58,18 +61,6 @@ export class UpdateManager {
     }
 
     return false;
-  }
-
-  public getCurrentReferencia = async (manager: EntityManager): Promise<Referencia> => {
-    return await manager.findOne(Referencia, { order: { idFipe: "DESC" } });
-  }
-
-  public updateReferencia = async (manager: EntityManager, referencia: Referencia) => {
-    await manager.update(Referencia, referencia.id, { idFipe: referencia.idFipe });
-  }
-
-  public createReferencia = async (manager: EntityManager, referencia: Referencia) => {
-    await manager.save(Referencia, referencia);
   }
 
   public updateVeiculos = async (

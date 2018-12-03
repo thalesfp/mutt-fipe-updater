@@ -1,11 +1,9 @@
-import { adaptCombustivel, adaptReferencia, adaptValor } from "../adapters/adaptFromFipeApi";
+import { adaptCombustivel, adaptValor } from "../adapters/adaptFromFipeApi";
 import { adaptAnoCombustivel } from "../adapters/adaptToFipeApi";
 import { AnoModelo } from "../entity/AnoModelo";
 import { Marca } from "../entity/Marca";
 import { Modelo } from "../entity/Modelo";
-import { Referencia } from "../entity/Referencia";
 import { TipoVeiculo } from "../enums/TipoVeiculo";
-import { ReferenciasResponseType } from "../interfaces/FipeResponseTypes";
 import FipeService from "../services/FipeService";
 
 export class FipeManager {
@@ -13,21 +11,6 @@ export class FipeManager {
 
   constructor(currentIdFipe: number) {
     this.currentIdFipe = currentIdFipe;
-  }
-
-  public getLastReferenciaFromApi = async (): Promise<Referencia> => {
-    try {
-      const referencias = await FipeService.referencias();
-
-      const lastReferencia = referencias.data.reduce(
-        (prev: ReferenciasResponseType, current: ReferenciasResponseType) =>
-          prev.Codigo > current.Codigo ? prev : current,
-      );
-
-      return adaptReferencia(lastReferencia);
-    } catch (error) {
-      throw error;
-    }
   }
 
   public getMarcas = async (tipoVeiculo: TipoVeiculo): Promise<Marca[]> => {
