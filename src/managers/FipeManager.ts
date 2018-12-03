@@ -1,5 +1,3 @@
-import { EntityManager } from "typeorm";
-
 import { adaptCombustivel, adaptReferencia, adaptValor } from "../adapters/adaptFromFipeApi";
 import { adaptAnoCombustivel } from "../adapters/adaptToFipeApi";
 import { AnoModelo } from "../entity/AnoModelo";
@@ -11,6 +9,12 @@ import { ReferenciasResponseType } from "../interfaces/FipeResponseTypes";
 import FipeService from "../services/FipeService";
 
 export class FipeManager {
+  private currentIdFipe: number;
+
+  constructor(currentIdFipe: number) {
+    this.currentIdFipe = currentIdFipe;
+  }
+
   public getLastReferenciaFromApi = async (): Promise<Referencia> => {
     try {
       const referencias = await FipeService.referencias();
@@ -26,15 +30,11 @@ export class FipeManager {
     }
   }
 
-  public getCurrentReferenciaInDatabase = async (manager: EntityManager): Promise<Referencia> => {
-    return await manager.findOne(Referencia, { order: { idFipe: "DESC" } });
-  }
-
   public getMarcas = async (tipoVeiculo: TipoVeiculo): Promise<Marca[]> => {
     const marcas: Marca[] = [];
 
     try {
-      const response = await FipeService.marcas(tipoVeiculo);
+      const response = await FipeService.marcas(this.currentIdFipe, tipoVeiculo);
 
       for (const marcaResponse of response.data) {
         const marca = new Marca();
@@ -56,7 +56,7 @@ export class FipeManager {
     const modelos: Modelo[] = [];
 
     try {
-      const response = await FipeService.modelos(tipoVeiculo, marca.idFipe);
+      const response = await FipeService.modelos(this.currentIdFipe, tipoVeiculo, marca.idFipe);
 
       for (const modeloResponse of response.data) {
         const modelo = new Modelo();
@@ -82,7 +82,12 @@ export class FipeManager {
     const anoModelos: AnoModelo[] = [];
 
     try {
-      const response = await FipeService.anoModelos(tipoVeiculo, marca.idFipe, modelo.idFipe);
+      const response = await FipeService.anoModelos(
+        this.currentIdFipe,
+        tipoVeiculo,
+        marca.idFipe,
+        modelo.idFipe,
+      );
 
       for (const anoModeloResponse of response.data) {
         const anoModelo = new AnoModelo();
@@ -110,6 +115,7 @@ export class FipeManager {
   ): Promise<AnoModelo> => {
     try {
       const { data } = await FipeService.anoModelo(
+        this.currentIdFipe,
         tipoVeiculo,
         marca.idFipe,
         modelo.idFipe,

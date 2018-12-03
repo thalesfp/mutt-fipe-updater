@@ -5,7 +5,6 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 
 import logger from "./infra/logger/logger";
-import { FipeManager } from "./managers/FipeManager";
 import { UpdateManager } from "./managers/UpdateManager";
 
 dotenv.config();
@@ -13,8 +12,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const initUpdate = async () => {
   try {
-    const fipeManager = new FipeManager();
-    const updateManager = new UpdateManager(fipeManager);
+    const updateManager = new UpdateManager();
 
     /* tslint:disable:object-literal-sort-keys */
     const connection = await createConnection({

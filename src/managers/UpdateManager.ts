@@ -12,18 +12,13 @@ import { FipeManager } from "./FipeManager";
 const ASYNC_MAP_LIMIT = 20;
 
 export class UpdateManager {
-  private fipeManager: FipeManager;
-
-  constructor(fipeManager: FipeManager) {
-    this.fipeManager = fipeManager;
-  }
-
   public init = async (connection: Connection) => {
     const queryRunner = connection.createQueryRunner();
     const manager = queryRunner.manager;
 
-    const currentReferencia = await this.fipeManager.getCurrentReferenciaInDatabase(manager);
-    const lastReferenciaFromApi = await this.fipeManager.getLastReferenciaFromApi();
+    const currentReferencia = await this.getCurrentReferencia(manager);
+    const fipeManager = new FipeManager(currentReferencia.idFipe);
+    const lastReferenciaFromApi = await fipeManager.getLastReferenciaFromApi();
 
     try {
       await queryRunner.connect();
@@ -31,8 +26,8 @@ export class UpdateManager {
 
       if (this.shouldUpdate(currentReferencia, lastReferenciaFromApi)) {
         logger.info("Updating database...");
-        await this.updateVeiculos(manager, TipoVeiculo.carro);
-        await this.updateVeiculos(manager, TipoVeiculo.moto);
+        await this.updateVeiculos(manager, fipeManager, TipoVeiculo.carro);
+        await this.updateVeiculos(manager, fipeManager, TipoVeiculo.moto);
         await this.createReferencia(manager, lastReferenciaFromApi);
       } else {
         logger.info("Database already updated.");
@@ -65,6 +60,10 @@ export class UpdateManager {
     return false;
   }
 
+  public getCurrentReferencia = async (manager: EntityManager): Promise<Referencia> => {
+    return await manager.findOne(Referencia, { order: { idFipe: "DESC" } });
+  }
+
   public updateReferencia = async (manager: EntityManager, referencia: Referencia) => {
     await manager.update(Referencia, referencia.id, { idFipe: referencia.idFipe });
   }
@@ -73,18 +72,22 @@ export class UpdateManager {
     await manager.save(Referencia, referencia);
   }
 
-  public updateVeiculos = async (manager: EntityManager, tipoVeiculo: TipoVeiculo) => {
-    const marcas = await this.updateMarcas(manager, tipoVeiculo);
+  public updateVeiculos = async (
+    manager: EntityManager,
+    fipeManager: FipeManager,
+    tipoVeiculo: TipoVeiculo,
+  ) => {
+    const marcas = await this.updateMarcas(manager, fipeManager, tipoVeiculo);
 
     await map(
       marcas,
       async (marca) => {
-        const modelos = await this.updateModelos(manager, tipoVeiculo, marca);
+        const modelos = await this.updateModelos(manager, fipeManager, tipoVeiculo, marca);
 
         await map(
           modelos,
           async (modelo) => {
-            await this.updateAnoModelo(manager, tipoVeiculo, marca, modelo);
+            await this.updateAnoModelo(manager, fipeManager, tipoVeiculo, marca, modelo);
           },
           { concurrency: ASYNC_MAP_LIMIT },
         );
@@ -95,9 +98,10 @@ export class UpdateManager {
 
   public updateMarcas = async (
     manager: EntityManager,
+    fipeManager: FipeManager,
     tipoVeiculo: TipoVeiculo,
   ): Promise<Marca[]> => {
-    const marcasFromFipe = await this.fipeManager.getMarcas(tipoVeiculo);
+    const marcasFromFipe = await fipeManager.getMarcas(tipoVeiculo);
 
     const marcas: Marca[] = [];
 
@@ -115,10 +119,11 @@ export class UpdateManager {
 
   public updateModelos = async (
     manager: EntityManager,
+    fipeManager: FipeManager,
     tipoVeiculo: TipoVeiculo,
     marca: Marca,
   ): Promise<Modelo[]> => {
-    const modelosFromFipe = await this.fipeManager.getModelos(tipoVeiculo, marca);
+    const modelosFromFipe = await fipeManager.getModelos(tipoVeiculo, marca);
 
     const modelos: Modelo[] = [];
 
@@ -136,14 +141,15 @@ export class UpdateManager {
 
   public updateAnoModelo = async (
     manager: EntityManager,
+    fipeManager: FipeManager,
     tipoVeiculo: TipoVeiculo,
     marca: Marca,
     modelo: Modelo,
   ) => {
-    const preAnoModelosFromFipe = await this.fipeManager.getAnoModelos(tipoVeiculo, marca, modelo);
+    const preAnoModelosFromFipe = await fipeManager.getAnoModelos(tipoVeiculo, marca, modelo);
 
     for (const preAnoModeloFromFipe of preAnoModelosFromFipe) {
-      const anoModeloFromFipe = await this.fipeManager.getAnoModelo(
+      const anoModeloFromFipe = await fipeManager.getAnoModelo(
         tipoVeiculo,
         marca,
         modelo,
