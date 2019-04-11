@@ -13,7 +13,8 @@
     "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts' 'test/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' 'test/**/*.ts' --fix",
     "precommit": "npm run prettier && npm run lint",
-    "deploy": "sh scripts/deploy.sh"
+    "deploy": "sh scripts/deploy.sh",
+    "postinstall": "tsc"
   },
   "author": "Thales Pereira <thales@appcraft.com.br>",
   "repository": {
