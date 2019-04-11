@@ -38,6 +38,7 @@ const initUpdate = async () => {
 if (process.env.NODE_ENV === "production") {
   const job = new cron.CronJob("0 0 22 * * *", initUpdate);
   job.start();
+  initUpdate();
 } else {
   initUpdate();
 }

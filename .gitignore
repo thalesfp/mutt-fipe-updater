@@ -10,3 +10,4 @@ coverage
 !.elasticbeanstalk/*.global.yml
 
 scripts/production.env
+production.log

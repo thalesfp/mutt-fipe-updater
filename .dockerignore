@@ -9,3 +9,6 @@ README.md
 LICENSE
 .vscode
 .env
+production.log
+dist
+coverage
