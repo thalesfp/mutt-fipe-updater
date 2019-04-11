@@ -4,10 +4,14 @@ ENV NODE_ENV=production
 
 WORKDIR /mutt-fipe-updater
 
-COPY . .
+COPY ./package* ./
 
 RUN npm install
 
+COPY . .
+
 RUN npm run build-ts
+
+RUN ls
 
 CMD [ "npm", "start" ]
