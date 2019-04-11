@@ -13,8 +13,7 @@
     "prettier": "prettier --config .prettierrc.yml --write 'src/**/*.ts' 'test/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' 'test/**/*.ts' --fix",
     "precommit": "npm run prettier && npm run lint",
-    "deploy": "sh scripts/deploy.sh",
-    "postinstall": "tsc"
+    "deploy": "sh scripts/deploy.sh"
   },
   "author": "Thales Pereira <thales@appcraft.com.br>",
   "repository": {
@@ -39,6 +38,15 @@
     "all": true
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0",
+    "prettier": "^1.15.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0"
+  },
+  "dependencies": {
+    "@sentry/node": "^4.4.1",
     "@types/async": "^2.0.50",
     "@types/axios": "^0.14.0",
     "@types/bluebird": "^3.5.24",
@@ -48,16 +56,6 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.10",
     "@types/winston": "^2.4.4",
-    "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "nyc": "^13.3.0",
-    "prettier": "^1.15.2",
-    "ts-node": "^7.0.1",
-    "tslint": "^5.11.0",
-    "typescript": "^3.2.1"
-  },
-  "dependencies": {
-    "@sentry/node": "^4.4.1",
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "cron": "^1.5.0",
@@ -66,6 +64,7 @@
     "reflect-metadata": "^0.1.12",
     "retry-axios": "^0.3.2",
     "typeorm": "^0.2.9",
+    "typescript": "^3.4.3",
     "winston": "^3.1.0"
   }
 }
