@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  fipe-updater:
+    build: .
+    env_file:
+      - scripts/production.env
+    volumes:
+      - .:/mutt-fipe-updater
+      - /mutt-fipe-updater/node_modules
+    command: npm start
