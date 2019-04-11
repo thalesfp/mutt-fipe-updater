@@ -6,12 +6,8 @@ WORKDIR /mutt-fipe-updater
 
 COPY . .
 
-RUN ls
-
 RUN npm install
 
 RUN npm run build-ts
-
-RUN ls
 
 CMD [ "npm", "start" ]
