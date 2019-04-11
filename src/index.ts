@@ -11,19 +11,21 @@ dotenv.config();
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const initUpdate = async () => {
-  /* tslint:disable:object-literal-sort-keys */
-  const connection = await createConnection({
-    type: "postgres",
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    entities: [__dirname + "/entity/*.js"],
-    synchronize: false,
-  });
+  let connection;
 
   try {
+    /* tslint:disable:object-literal-sort-keys */
+    connection = await createConnection({
+      type: "postgres",
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
+      entities: [__dirname + "/entity/*.js"],
+      synchronize: false,
+    });
+
     const updateManager = new UpdateManager();
     await updateManager.init(connection);
   } catch (error) {
