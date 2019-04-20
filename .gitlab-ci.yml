@@ -1,25 +1,25 @@
 stages:
-    build
-    containerize
+  - build
+  - containerize
 
 cache:
-    key: $CI_BUILD_REF
-    paths:
-        - dist
-        - server.js
-        - package.json
+  key: $CI_BUILD_REF
+  paths:
+    - dist
+    - server.js
+    - package.json
 
 build:
-    stage: build
-    image: node:10
-    script:
-        - npm install
-        - npm run build-ts
+  stage: build
+  image: node:10
+  script:
+    - npm install
+    - npm run build
 
 containerize:
-    stage: containerize
-    image: docker:18
-    script:
-        - docker info
-        - # docker build -t user/my-typescript-image:latest
-        - # docker push user/my-typescript-image:latest
+  stage: containerize
+  image: docker:18
+  script:
+    - docker info
+    - # docker build -t user/my-typescript-image:latest
+    - # docker push user/my-typescript-image:latest
