@@ -25,17 +25,17 @@ export class ReferenciaManager {
     } catch (error) {
       throw error;
     }
-  }
+  };
 
   public getCurrentReferencia = async (): Promise<Referencia> => {
     return await this.manager.findOne(Referencia, { order: { idFipe: "DESC" } });
-  }
+  };
 
   public createReferencia = async (referencia: Referencia) => {
     await this.manager.save(Referencia, referencia);
-  }
+  };
 
   public updateReferencia = async (referencia: Referencia) => {
     await this.manager.update(Referencia, referencia.id, { idFipe: referencia.idFipe });
-  }
+  };
 }

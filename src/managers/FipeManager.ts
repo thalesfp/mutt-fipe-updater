@@ -33,7 +33,7 @@ export class FipeManager {
     }
 
     return marcas;
-  }
+  };
 
   public getModelos = async (tipoVeiculo: TipoVeiculo, marca: Marca): Promise<Modelo[]> => {
     const modelos: Modelo[] = [];
@@ -55,7 +55,7 @@ export class FipeManager {
     }
 
     return modelos;
-  }
+  };
 
   public getAnoModelos = async (
     tipoVeiculo: TipoVeiculo,
@@ -88,7 +88,7 @@ export class FipeManager {
     }
 
     return anoModelos;
-  }
+  };
 
   public getAnoModelo = async (
     tipoVeiculo: TipoVeiculo,
@@ -117,5 +117,5 @@ export class FipeManager {
     } catch (error) {
       throw error;
     }
-  }
+  };
 }

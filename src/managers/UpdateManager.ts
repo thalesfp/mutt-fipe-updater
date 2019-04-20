@@ -46,7 +46,7 @@ export class UpdateManager {
     } finally {
       await queryRunner.release();
     }
-  }
+  };
 
   public shouldUpdate = (
     currentReferencia: Referencia,
@@ -61,7 +61,7 @@ export class UpdateManager {
     }
 
     return false;
-  }
+  };
 
   public updateVeiculos = async (
     manager: EntityManager,
@@ -85,7 +85,7 @@ export class UpdateManager {
       },
       { concurrency: ASYNC_MAP_LIMIT },
     );
-  }
+  };
 
   public updateMarcas = async (
     manager: EntityManager,
@@ -106,7 +106,7 @@ export class UpdateManager {
     }
 
     return marcas;
-  }
+  };
 
   public updateModelos = async (
     manager: EntityManager,
@@ -128,7 +128,7 @@ export class UpdateManager {
     }
 
     return modelos;
-  }
+  };
 
   public updateAnoModelo = async (
     manager: EntityManager,
@@ -161,5 +161,5 @@ export class UpdateManager {
         });
       }
     }
-  }
+  };
 }
