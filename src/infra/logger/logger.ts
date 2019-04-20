@@ -12,7 +12,10 @@ const format = winston.format.combine(
 
 const transports =
   process.env.NODE_ENV === "production"
-    ? new winston.transports.File({ filename: "production.log" })
+    ? [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: "production.log" }),
+      ]
     : new winston.transports.Console();
 
 export default winston.createLogger({ format, transports });
