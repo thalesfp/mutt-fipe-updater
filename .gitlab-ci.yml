@@ -28,6 +28,5 @@ containerize:
   stage: containerize
   image: docker:stable
   script:
-    - docker info
-    #- docker build -t user/my-typescript-image:latest
-    #- docker push user/my-typescript-image:latest
+    - docker build -t mutt-fipe-updated:latest .
+    - docker push mutt-fipe-updated:latest
