@@ -29,7 +29,5 @@ containerize:
   image: docker:stable
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
-    # - docker build -t $CI_REGISTRY/mutt/mutt-fipe-updated:latest .
-    # - docker push $CI_REGISTRY/mutt/mutt-fipe-updated:latest
-    - docker build -t gitlab.appcraft.com.br:4567/mutt/mutt-fipe-updater .
-    - docker push gitlab.appcraft.com.br:4567/mutt/mutt-fipe-updater
+    - docker build -t gitlab.appcraft.com.br:4567/mutt/mutt-fipe-updater:latest .
+    - docker push gitlab.appcraft.com.br:4567/mutt/mutt-fipe-updater:latest
