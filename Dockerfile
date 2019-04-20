@@ -12,6 +12,5 @@ COPY . .
 
 RUN npm run build-ts
 
-RUN ls
-
 CMD [ "npm", "start" ]
+ 
