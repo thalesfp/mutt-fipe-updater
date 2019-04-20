@@ -1,0 +1,32 @@
+stages:
+  - build
+  - test
+  - containerize
+
+cache:
+  key: $CI_BUILD_REF
+  paths:
+    - node_modules
+    - dist
+    - package.json
+    - package-lock.json
+
+build:
+  stage: build
+  image: node:10
+  script:
+    - npm install
+    - npm run build-ts
+
+test:
+  stage: test
+  image: node:10
+  script:
+    - npm test
+
+containerize:
+  stage: containerize
+  image: docker:stable
+  script:
+    - docker build -t mutt-fipe-updated:latest .
+    - docker push mutt-fipe-updated:latest
