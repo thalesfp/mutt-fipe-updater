@@ -5,8 +5,6 @@ stages:
 cache:
   key: $CI_BUILD_REF
   paths:
-    - dist
-    - server.js
     - package.json
 
 build:
@@ -14,7 +12,7 @@ build:
   image: node:10
   script:
     - npm install
-    - npm run build
+    - npm run build-ts
 
 containerize:
   stage: containerize
