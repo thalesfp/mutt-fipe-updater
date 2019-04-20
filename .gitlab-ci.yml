@@ -6,7 +6,10 @@ stages:
 cache:
   key: $CI_BUILD_REF
   paths:
+    - node_modules
+    - dist
     - package.json
+    - package-lock.json
 
 build:
   stage: build
