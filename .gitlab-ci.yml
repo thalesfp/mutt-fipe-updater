@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - containerize
 
 cache:
@@ -13,6 +14,12 @@ build:
   script:
     - npm install
     - npm run build-ts
+
+test:
+  stage: test
+  image: node:10
+  script:
+    - npm test
 
 containerize:
   stage: containerize
