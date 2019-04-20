@@ -26,7 +26,7 @@ test:
 
 containerize:
   stage: containerize
-  image: docker:18
+  image: docker:stable
   script:
     - docker info
     #- docker build -t user/my-typescript-image:latest
