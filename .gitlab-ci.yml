@@ -21,5 +21,5 @@ containerize:
   image: docker:18
   script:
     - docker info
-    - # docker build -t user/my-typescript-image:latest
-    - # docker push user/my-typescript-image:latest
+    #- docker build -t user/my-typescript-image:latest
+    #- docker push user/my-typescript-image:latest
