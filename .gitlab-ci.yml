@@ -28,5 +28,5 @@ containerize:
   stage: containerize
   image: docker:stable
   script:
-    - docker build -t mutt-fipe-updated:latest .
-    - docker push mutt-fipe-updated:latest
+    - docker build -t mutt/mutt-fipe-updated:latest .
+    - docker push mutt/mutt-fipe-updated:latest
