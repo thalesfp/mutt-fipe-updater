@@ -1,6 +1,6 @@
 stages:
   - build
-  - test
+  # - test
   - containerize
 
 cache:
@@ -28,8 +28,6 @@ containerize:
   stage: containerize
   image: docker:stable
   script:
-    - echo $CI_REGISTRY_USER
-    - echo $CI_REGISTRY
-    - docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t mutt/mutt-fipe-updated:latest .
-    - docker push mutt/mutt-fipe-updated:latest
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - docker build -t $CI_REGISTRY/mutt/mutt-fipe-updated:latest .
+    - docker push $CI_REGISTRY/mutt/mutt-fipe-updated:latest
