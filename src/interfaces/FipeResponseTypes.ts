@@ -9,8 +9,8 @@ export interface MarcasResponseType {
 }
 
 export interface ModelosResponseType {
-  Label: string;
-  Value: number;
+  Modelos: MarcasResponseType[],
+  Anos: AnoModeloResponseType[]
 }
 
 export interface AnoModelosResponseType {

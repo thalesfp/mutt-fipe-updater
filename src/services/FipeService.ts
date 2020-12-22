@@ -44,7 +44,7 @@ export default {
       params: { referencia },
     }),
   modelos: async (referencia: number, tipoVeiculo: TipoVeiculo, marca: number) =>
-    instance.get<ModelosResponseType[]>(
+    instance.get<ModelosResponseType>(
       `/${adaptTipoVeiculo(tipoVeiculo)}/marcas/${marca}/modelos`,
       { params: { referencia } },
     ),

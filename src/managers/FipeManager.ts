@@ -41,7 +41,7 @@ export class FipeManager {
     try {
       const response = await FipeService.modelos(this.currentIdFipe, tipoVeiculo, marca.idFipe);
 
-      for (const modeloResponse of response.data) {
+      for (const modeloResponse of response.data.Modelos) {
         const modelo = new Modelo();
 
         modelo.nome = modeloResponse.Label;
