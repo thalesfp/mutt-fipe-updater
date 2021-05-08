@@ -63,7 +63,7 @@
     "pg": "^7.10.0",
     "reflect-metadata": "^0.1.13",
     "retry-axios": "^0.3.2",
-    "typeorm": "^0.2.16",
+    "typeorm": "^0.2.25",
     "typescript": "^3.4.4",
     "winston": "^3.2.1"
   }
